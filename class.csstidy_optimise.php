@@ -166,11 +166,11 @@ class csstidy_optimise
         }
 
         $important = '';
-        if(csstidy::is_important($this->sub_value))
+        if($this->parser->is_important($this->sub_value))
         {
             $important = '!important';
         }
-        $this->sub_value = csstidy::gvw_important($this->sub_value);
+        $this->sub_value = $this->parser->gvw_important($this->sub_value);
 
         // Compress font-weight
         if($this->property == 'font-weight' && $this->parser->get_cfg('compress_font-weight'))
@@ -223,9 +223,9 @@ class csstidy_optimise
     function shorthand($value)
     {
         $important = '';
-        if(csstidy::is_important($value))
+        if($this->parser->is_important($value))
         {
-            $values = csstidy::gvw_important($value);
+            $values = $this->parser->gvw_important($value);
             $important = '!important';
         }
         else $values = $value;
@@ -279,9 +279,9 @@ class csstidy_optimise
      */
     function compress_important(&$string)
     {
-        if(csstidy::is_important($string))
+        if($this->parser->is_important($string))
         {
-            $string = csstidy::gvw_important($string) . '!important';
+            $string = $this->parser->gvw_important($string) . '!important';
         }
         return $string;
     }
@@ -502,9 +502,9 @@ class csstidy_optimise
         }
 
         $important = '';
-        if(csstidy::is_important($value))
+        if($this->parser->is_important($value))
         {
-            $value = csstidy::gvw_important($value);
+            $value = $this->parser->gvw_important($value);
             $important = '!important';
         }
         $values = explode(' ',$value);
@@ -562,11 +562,11 @@ class csstidy_optimise
             switch($status)
             {
                 case 'st':
-                if($string{$i} == $sep && !csstidy::escaped($string,$i))
+                if($string{$i} == $sep && !$this->parser->escaped($string,$i))
                 {
                     ++$num;
                 }
-                elseif($string{$i} == '"' || $string{$i} == '\'' || $string{$i} == '(' && !csstidy::escaped($string,$i))
+                elseif($string{$i} == '"' || $string{$i} == '\'' || $string{$i} == '(' && !$this->parser->escaped($string,$i))
                 {
                     $status = 'str';
                     $to = ($string{$i} == '(') ? ')' : $string{$i};
@@ -579,7 +579,7 @@ class csstidy_optimise
                 break;
 
                 case 'str':
-                if($string{$i} == $to && !csstidy::escaped($string,$i))
+                if($string{$i} == $to && !$this->parser->escaped($string,$i))
                 {
                     $status = 'st';
                 }
@@ -621,10 +621,10 @@ class csstidy_optimise
                 for($i = 0; $i < 4; $i++)
                 {
                     $val = $array[$value[$i]];
-                    if(csstidy::is_important($val))
+                    if($this->parser->is_important($val))
                     {
                         $important = '!important';
-                        $return[$key] .= csstidy::gvw_important($val).' ';
+                        $return[$key] .= $this->parser->gvw_important($val).' ';
                     }
                     else
                     {
@@ -657,10 +657,10 @@ class csstidy_optimise
         $important = '';
         $return = array('background-image' => NULL,'background-size' => NULL,'background-repeat' => NULL,'background-position' => NULL,'background-attachment'=>NULL,'background-clip' => NULL,'background-origin' => NULL,'background-color' => NULL);
 
-        if(csstidy::is_important($str_value))
+        if($this->parser->is_important($str_value))
         {
             $important = ' !important';
-            $str_value = csstidy::gvw_important($str_value);
+            $str_value = $this->parser->gvw_important($str_value);
         }
 
         $str_value = csstidy_optimise::explode_ws(',',$str_value);
@@ -738,7 +738,7 @@ class csstidy_optimise
         // Max number of background images. CSS3 not yet fully implemented
         $number_of_values = @max(count(csstidy_optimise::explode_ws(',',$input_css['background-image'])),count(csstidy_optimise::explode_ws(',',$input_css['background-color'])),1);
         // Array with background images to check if BG image exists
-        $bg_img_array = @csstidy_optimise::explode_ws(',',csstidy::gvw_important($input_css['background-image']));
+        $bg_img_array = @csstidy_optimise::explode_ws(',',$this->parser->gvw_important($input_css['background-image']));
         $new_bg_value = '';
         $important = '';
 
@@ -763,10 +763,10 @@ class csstidy_optimise
                 }
 
                 // Remove !important
-                if(csstidy::is_important($cur_value))
+                if($this->parser->is_important($cur_value))
                 {
                     $important = ' !important';
-                    $cur_value = csstidy::gvw_important($cur_value);
+                    $cur_value = $this->parser->gvw_important($cur_value);
                 }
 
                 // Do not add default values
