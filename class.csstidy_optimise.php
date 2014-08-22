@@ -35,7 +35,6 @@
  * @author Florian Schmitz (floele at gmail dot com) 2005-2006
  * @version 1.0
  */
-
 class csstidy_optimise
 {
     /**
